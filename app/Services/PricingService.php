@@ -14,13 +14,13 @@ class PricingService
         $this->pricingRepository = $pricingRepository;
     }
 
-    public function getAllPackages()
-    {
-        
-    }
-
     // public function getAllPackages()
     // {
-    //     return Pricing::all();
+
     // }
+
+    public function getAllPackages()
+    {
+        return Pricing::all();
+    }
 }

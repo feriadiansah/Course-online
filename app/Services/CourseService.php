@@ -11,7 +11,7 @@ class CourseService
     {
         $user = Auth::user();
 
-        if (!$course->courseStudents()->where('user_id', $user->id)->exist()) {
+        if (!$course->courseStudents()->where('user_id', $user->id)->exists()) {
             $course->courseStudents()->create([
                 'user_id' => $user->id,
                 'is_Active' => true,
