@@ -14,17 +14,24 @@ class CourseController extends Controller
     {
         $this->courseService = $courseService;
     }
+
     public function index()
     {
-        $courseByCategory = Course::with('category')
-            ->latest()
-            ->get()
-            ->groupBy(function ($course) {
-                return $course->category->name ?? 'Uncategorized';
-            });
-
-        return view('front.index', compact('courseByCategory'));
+        $courseByCategory = $this->courseService->getCourseGroupedByCategory();
+        return view('courses.index', compact('courseByCategory'));
     }
+
+    // public function index()
+    // {
+    //     $courseByCategory = Course::with('category')
+    //         ->latest()
+    //         ->get()
+    //         ->groupBy(function ($course) {
+    //             return $course->category->name ?? 'Uncategorized';
+    //         });
+
+    //     return view('front.index', compact('courseByCategory'));
+    // }
 
     public function details(Course $course)
     {
@@ -40,6 +47,7 @@ class CourseController extends Controller
 
         return view('course.success_joined', array_merge(
             compact('course', 'studentName'),
+            $firstSectionAndContent
         ));
     }
 
@@ -55,6 +63,19 @@ class CourseController extends Controller
         return view('courses.learning_finished', compact('course'));
     }
 
+    // public function search_courses(Request $request)
+    // {
+    //     $request->validate([
+    //         'search' => 'required|string',
+    //     ]);
+
+    //     $keyword = $request->search;
+    //     $courses = Course::where('name', 'like', "%{$keyword}%")
+    //         ->orWhere('about', 'like', "%{$keyword}%")
+    //         ->get();
+    //     return view('courses.search', compact('courses', 'keyword'));
+    // }
+
     public function search_courses(Request $request)
     {
         $request->validate([
@@ -62,9 +83,8 @@ class CourseController extends Controller
         ]);
 
         $keyword = $request->search;
-        $courses = Course::where('name', 'like', "%{$keyword}%")
-            ->orWhere('about', 'like', "%{$keyword}%")
-            ->get();
+        $courses = $this->courseService->searchCourse($keyword);
+
         return view('courses.search', compact('courses', 'keyword'));
     }
 }
