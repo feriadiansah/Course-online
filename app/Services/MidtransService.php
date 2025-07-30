@@ -8,7 +8,7 @@ use Midtrans\Snap;
 use Illuminate\Support\Facades\Log;
 use Midtrans\Notification;
 
-class MidtransService
+class MidtransService 
 {
     function __construct()
     {
@@ -39,7 +39,7 @@ class MidtransService
                 'custom_field1' => $notification->custom_field1,
                 'custom_field2' => $notification->custom_field2,
             ];
-        } catch (\Exception $e) {   
+        } catch (\Exception $e) {
             Log::error('Mdtransa notification error: ' . $e->getMessage());
             throw $e;
         }
