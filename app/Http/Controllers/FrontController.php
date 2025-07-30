@@ -2,23 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\PricingRepositoryInterface;
-use App\Repositories\TransactionRepositoryInterface;
-use App\Services\MidtransService;
+use App\Models\Pricing;
+use App\Services\PaymentService;
+use App\Services\PricingService;
+use App\Services\TransactionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class FrontController extends Controller
 {
-    protected $midtransService;
-    protected $pricingRepository;
-    protected $transactionRepository;
+    protected $transactionService;
+    protected $paymentService;
+    protected $pricingService;
 
-    public function __construct(MidtransService $midtransService, PricingRepositoryInterface $pricingRepository, TransactionRepositoryInterface $transactionRepository)
+    public function __construct(PaymentService $paymentService, TransactionService $transactionService, PricingService $pricingService)
     {
-        $this->pricingRepository = $pricingRepository;
-        $this->transactionRepository = $transactionRepository;
-        $this->midtransService = $midtransService;
+        $this->paymentService = $paymentService;
+        $this->transactionService = $transactionService;
+        $this->pricingService = $pricingService;
     }
 
     public function index()
@@ -28,7 +30,7 @@ class FrontController extends Controller
 
     public function pricing()
     {
-        $pricing_packages = $this->pricingRepository->getAll();
+        $pricing_packages = $this->pricingService->getAllPackages();
         $user = Auth::user();
         return view('front.pricing', compact('pricing_packages', 'user'));
     }
