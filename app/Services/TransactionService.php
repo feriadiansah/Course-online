@@ -41,6 +41,7 @@ class TransactionService
             'sub_total_amount',
             'grand_total_amount',
             'pricing',
+            'user',
             'started_at',
             'alreadySubscribed',
             'ended_at',

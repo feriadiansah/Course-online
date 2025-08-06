@@ -33,13 +33,23 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'occupation' => ['required', 'string', 'max:255'],
+            'photo' => ['required', 'image', 'max:2048','mimes:png,jpg,jpeg'],
         ]);
+
+        if($request->hasFile('photo')){
+            $photoPath = $request->file('photo')->store('photos', 'public');
+        }
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'occupation' => $request->occupation,
+            'photo' => $photoPath,
         ]);
+
+        $user->assignRole('student'); // Assign default role to the student
 
         event(new Registered($user));
 

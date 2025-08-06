@@ -11,9 +11,12 @@ Route::get('/', [FrontController::class, 'index'])->name('front.index');
 Route::get('/pricing', [FrontController::class, 'pricing'])->name('front.pricing');
 
 // untuk midtrans payment notification
-Route::match(['get', 'post'], '/booking/payment/midtrans/notification',
- [FrontController::class, 'paymentMidtransNotification'])
- ->name('front.payment_midtrans.notification');
+Route::match(
+    ['get', 'post'],
+    '/booking/payment/midtrans/notification',
+    [FrontController::class, 'paymentMidtransNotification']
+)
+    ->name('front.payment_midtrans.notification');
 
 
 Route::middleware('auth')->group(function () {
@@ -21,7 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-Route::middleware('role:student')->group(function () {
+    Route::middleware('role:student')->group(function () {
         Route::get('/dashboard/subscriptions/', [DashboardController::class, 'subscriptions'])->name('dashboard.subscriptions');
 
         Route::get('/dashboard/subscriptions/{transaction}', [DashboardController::class, 'subscription_details'])->name('dashboard.subscription.details');
@@ -32,13 +35,12 @@ Route::middleware('role:student')->group(function () {
 
         Route::get('/dashboard/search/courses', [CourseController::class, 'search_course'])->name('dashboard.search.courses');
 
-Route::middleware(['check.subscription'])->group(function(){
-        Route::get('/dashboard/join/{course:slug}', [CourseController::class, 'join'])->name('dashboard.course.join');
+        Route::middleware(['check.subscription'])->group(function () {
+            Route::get('/dashboard/join/{course:slug}', [CourseController::class, 'join'])->name('dashboard.course.join');
 
-        Route::get('/dashboard/learning/{course:slug}/{courseSection}/{sectionContent}', [CourseController::class, 'learning'])->name('dashboard.course.learning');
+            Route::get('/dashboard/learning/{course:slug}/{courseSection}/{sectionContent}', [CourseController::class, 'learning'])->name('dashboard.course.learning');
 
-        Route::get('/dashboard/learning/{course:slug}/finished', [CourseController::class, 'learning_finished'])->name('dashboard.course.learning.finished');
-
+            Route::get('/dashboard/learning/{course:slug}/finished', [CourseController::class, 'learning_finished'])->name('dashboard.course.learning.finished');
         });
 
         // diluar middleware check.subscription tapi didalam role student

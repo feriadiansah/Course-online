@@ -21,7 +21,7 @@ class Pricing extends Model
 
     public function isSubscribedByUser($userId)
     {
-        return $this->transactions()
+        return $this->transaction() //mengakses relasi transaction method yang diatas
             ->where('user_id', $userId)
             ->where('is_paid',  true)
             ->where('ended_at', '>=', now())
