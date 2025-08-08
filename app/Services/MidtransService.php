@@ -8,7 +8,7 @@ use Midtrans\Snap;
 use Illuminate\Support\Facades\Log;
 use Midtrans\Notification;
 
-class MidtransService 
+class MidtransService
 {
     function __construct()
     {

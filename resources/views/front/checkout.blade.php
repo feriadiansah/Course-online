@@ -13,6 +13,8 @@
     </div>
     <main class="flex flex-1 justify-center py-5 items-center">
         <div class="flex w-[1000px] !h-fit rounded-[20px] border border-obito-grey gap-[40px] bg-white items-center p-5">
+
+            {{-- form yang membungkus fitur pay now --}}
             <form id="checkout-details" method="POST" class="w-full flex flex-col gap-5">
                 @csrf
                 <input type="text" hidden name="payment_method" value="midtrans">
@@ -104,6 +106,8 @@
                 <p class="text-sm leading-[21px] text-center hover:underline text-obito-text-secondary">Pahami Terms &
                     Conditions Platform Kami</p>
             </form>
+
+            {{-- section yang sebelah kanan tampilan --}}
             <div id="benefits" class="bg-[#F8FAF9] rounded-[20px] overflow-hidden shrink-0 w-[420px]">
                 <section id="thumbnails"
                     class="relative flex justify-center h-[250px] items-center overflow-hidden rounded-t-[14px] w-full">
@@ -192,11 +196,11 @@
                         }
                     });
                 }else {
-                    alert('Error: ',data.error);
+                    alert('Error: ' + data.error);
                 }
             })
             .catch(error => {
-                console.error('Error: ',data.error);
+                console.error('Error: ', error);
             });
         });
     </script>

@@ -23,7 +23,7 @@ class PaymentService
         $this->midtransService = $midtransService;
     }
 
-    public function createPayment(int $pricingId) //: string  return type berupa string
+    public function     createPayment(int $pricingId) //: string  return type berupa string
     {
         $user = Auth::user();
 
@@ -93,6 +93,6 @@ class PaymentService
         ];
         $this->transactionRepository->create($transactionData);
 
-        Log::info('Transaction successfully created :'. $notification['order_id']);
+        Log::info('Transaction successfully created :' . $notification['order_id']);
     }
 }
