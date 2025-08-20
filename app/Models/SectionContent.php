@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\CourseSection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -12,10 +13,10 @@ class SectionContent extends Model
     protected $fillable = [
         'name',
         'course_section_id',
-        'content'
+        'content',
     ];
 
-    public function courseSection (){
+    public function courseSections(){
         return $this->belongsTo(CourseSection::class, 'course_section_id');
     }
 }

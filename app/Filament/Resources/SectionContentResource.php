@@ -59,11 +59,11 @@ class SectionContentResource extends Resource
                 TextColumn::make("name")
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('courseSection.name')
+                TextColumn::make('courseSections.name')
                     ->label('Course Section')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('courseSection.course.name')
+                TextColumn::make('courseSections.course.name')
                     ->label('Course')
                     ->searchable()
                     ->sortable(),

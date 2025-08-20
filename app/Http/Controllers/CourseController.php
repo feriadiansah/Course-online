@@ -35,7 +35,15 @@ class CourseController extends Controller
 
     public function details(Course $course)
     {
-        $course->load(['category', 'benefits', 'courseSections.sectionContents']);
+        $course->load([
+            'category',
+            'benefits',
+            'courseSections' => function ($q) {
+                $q->orderBy('position', 'asc'); // urutkan berdasarkan posisi section
+            },
+            'courseSections.sectionContents',
+            'courseMentors.mentor'
+        ]);
 
         return view('courses.details', compact('course'));
     }
@@ -45,7 +53,7 @@ class CourseController extends Controller
         $studentName = $this->courseService->enrollUser($course);
         $firstSectionAndContent = $this->courseService->getFirstSectionAndContent($course);
 
-        return view('course.success_joined', array_merge(
+        return view('courses.success_joined', array_merge(
             compact('course', 'studentName'),
             $firstSectionAndContent
         ));
@@ -54,6 +62,16 @@ class CourseController extends Controller
     public function learning(Course $course, $contentId, $sectionContentId)
     {
         $learningData = $this->courseService->getLearningData($course, $contentId, $sectionContentId);
+
+        // // cek doang
+        // $course->load('courseSections.sectionContents'); // atau courseSection..., sesuai pilihanmu
+        // dd(
+        //     method_exists($course, 'courseSections'),
+        //     method_exists($course, 'courseSection'),
+        //     $course->relationLoaded('courseSections'), // true/false
+        //     $course->relationLoaded('courseSection')   // true/false
+        // );
+
 
         return view('courses.learning', $learningData);
     }

@@ -24,6 +24,6 @@ class CourseSection extends Model
 
     public function sectionContents()
     {
-        return $this->hasMany(SectionContent::class, 'section_id');
+        return $this->hasMany(SectionContent::class, 'course_section_id');
     }
 }

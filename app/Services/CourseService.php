@@ -22,7 +22,7 @@ class CourseService
         if (!$course->courseStudents()->where('user_id', $user->id)->exists()) {
             $course->courseStudents()->create([
                 'user_id' => $user->id,
-                'is_Active' => true,
+                'is_active' => true,
             ]);
         }
 
@@ -41,30 +41,99 @@ class CourseService
         ];
     }
 
+    // public function getFirstSectionAndContent(Course $course)
+    // {
+    //     $sections = $course->courseSections()
+    //         ->orderBy('id', 'asc')
+    //         ->with(['sectionContents' => function ($q) {
+    //             $q->orderBy('id', 'asc');
+    //         }])
+    //         ->get();
+
+    //     $firstSection = $sections->first(fn($s) => $s->sectionContents->isNotEmpty());
+
+    //     return [
+    //         'firstSectionId' => $firstSection?->id,
+    //         'firstContentId' => $firstSection?->sectionContents->first()?->id,
+    //     ];
+    // }
+
+
+
+    // sebelum
+    // public function getLearningData(Course $course, $contentSectionId, $sectionContentId)
+    // {
+    //   $course->load(['courseSections.sectionContents']);
+
+
+    //     $currentSection = $course->courseSections->find($contentSectionId);
+    //     $currentContent = $currentSection ? $currentSection->sectionContents->find($sectionContentId) : null;
+
+    //     $nextContent = null;
+
+    //     if ($currentContent) {
+    //         $nextContent = $currentSection->sectionContents
+    //             ->where('id', '>', $currentContent->id)
+    //             ->sortBy('id')
+    //             ->first();
+    //     }
+
+    //     if (!$nextContent && $currentSection) {
+    //         $nextSection = $course->courseSections
+    //             ->where('id', '>', $currentSection->id)
+    //             ->sortBy('id')
+    //             ->first();
+
+    //         if ($nextSection) {
+    //             $nextContent = $nextSection->sectionContents->sortBy('id')->first();
+    //         }
+    //     }
+
+    //     return [
+    //         'course' => $course,
+    //         'currentSection' => $currentSection,
+    //         'currentContent' => $currentContent,
+    //         'nextContent' => $nextContent,
+    //         'isFinished' => !$nextContent,
+    //     ];
+    // }
     public function getLearningData(Course $course, $contentSectionId, $sectionContentId)
     {
-        $course->load(['courseSections.sectionContents']);
+        // ini bener nih
+        $course->load([
+            'courseSections' => function ($q) {
+                $q->orderBy('position', 'asc');
+            },
+            'courseSections.sectionContents'
+        ]);
+
 
         $currentSection = $course->courseSections->find($contentSectionId);
-        $currentContent = $currentSection ? $currentSection->sectionContents->find($sectionContentId) : null;
+        $currentContent = $currentSection
+            ? $currentSection->sectionContents->find($sectionContentId)
+            : null;
 
         $nextContent = null;
 
         if ($currentContent) {
+            // cari content berikutnya berdasarkan posisi
             $nextContent = $currentSection->sectionContents
-                ->where('id', '>', $currentContent->id)
-                ->sortBy('id')
+                ->where('position', '>', $currentContent->position)
+                ->sortBy('position')
                 ->first();
         }
 
         if (!$nextContent && $currentSection) {
-            $nextSection = $course->courseSection
-                ->where('id', '>', $currentSection->id)
-                ->sortBy('id')
+            // cari section berikutnya berdasarkan posisi
+            $nextSection = $course->courseSections
+                ->where('position', '>', $currentSection->position)
+                ->sortBy('position')
                 ->first();
 
             if ($nextSection) {
-                $nextContent = $nextSection->sectionContents->sortBy('id')->first();
+                $nextContent = $nextSection->sectionContents
+                    ->sortBy('position')
+                    ->first();
             }
         }
 
@@ -77,6 +146,7 @@ class CourseService
         ];
     }
 
+
     public function searchCourse($keyword)
     {
         return $this->courseRepository->searchByKeyword($keyword);
@@ -85,7 +155,7 @@ class CourseService
     {
         $courses = $this->courseRepository->getAllWithCategory();
 
-        return $courses->groupBy(function($courses){
+        return $courses->groupBy(function ($courses) {
             return $courses->category->name ?? 'Uncategorized';
         });
     }
